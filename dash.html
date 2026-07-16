@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programa Saldo+ — Dashboard Completo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root{
+    --navy:#1B1C46; --navy-light:#8B8CB8; --cyan:#17A398;
+    --orange:#F7941D; --magenta:#E5177D; --bg:#EFEFEF;
+    --card:#FFFFFF; --text-muted:#6B7280;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Poppins',sans-serif;background:var(--bg);color:var(--navy);}
+  header.top{background:var(--navy);padding:20px 28px;border-bottom:4px solid var(--cyan);}
+  header.top h1{color:#fff;font-size:20px;font-weight:600;margin:0;}
+  header.top p{color:var(--navy-light);font-size:13px;margin:4px 0 0;}
+  nav.tabs{display:flex;gap:8px;padding:14px 28px 0;background:var(--bg);flex-wrap:wrap;}
+  nav.tabs button{
+    font-family:'Poppins',sans-serif;font-size:13px;font-weight:500;padding:9px 16px;
+    border:none;border-radius:8px 8px 0 0;background:#E4E9F2;color:var(--navy);cursor:pointer;
+  }
+  nav.tabs button.active{background:var(--card);box-shadow:0 -2px 0 var(--cyan) inset;}
+  main{max-width:1100px;margin:0 auto;padding:24px 28px 60px;}
+  section.page{display:none;}
+  section.page.active{display:block;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-bottom:16px;}
+  .grid.wide{grid-template-columns:1fr;}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+  .kpi{background:var(--card);border-radius:8px;padding:12px 14px;}
+  .kpi.b1{border-top:3px solid var(--navy);}
+  .kpi.b2{border-top:3px solid var(--cyan);}
+  .kpi.b3{border-top:3px solid var(--orange);}
+  .kpi.b4{border-top:3px solid var(--magenta);}
+  .kpi .label{font-size:11px;color:var(--text-muted);font-weight:500;letter-spacing:.03em;}
+  .kpi .value{font-size:21px;font-weight:600;color:var(--navy);}
+  .card{background:var(--card);border-radius:10px;padding:16px 18px;}
+  .card h3{font-size:14px;font-weight:600;color:var(--navy);margin:0 0 4px;}
+  .card .sub{font-size:12px;color:var(--text-muted);margin:0 0 12px;}
+  .chart-wrap{position:relative;width:100%;}
+  .dl-btn{
+    display:inline-flex;align-items:center;gap:6px;margin-top:10px;
+    font-family:'Poppins',sans-serif;font-size:12px;font-weight:500;color:var(--navy);
+    background:#EEF2F9;border:none;border-radius:6px;padding:6px 12px;cursor:pointer;
+  }
+  .dl-btn:hover{background:#E0E7F2;}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--text-muted);margin-top:10px;}
+  .legend span{display:flex;align-items:center;gap:5px;}
+  .dot{width:9px;height:9px;border-radius:2px;display:inline-block;}
+  .note{font-size:12px;color:var(--text-muted);background:#EEF2F9;border-radius:8px;padding:10px 14px;margin-top:10px;}
+  .badge{display:inline-block;background:#FBE7EF;color:#8A1E4A;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;margin-bottom:8px;}
+  footer.foot{max-width:1100px;margin:0 auto;padding:0 28px 40px;font-size:11px;color:var(--text-muted);}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>Programa Saldo+</h1>
+  <p>Dashboard executivo consolidado · Semestre Atual</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-page="p1">1 · Visão Geral</button>
+  <button class="tab-btn" data-page="p2">2 · Taxas e Comparativos</button>
+  <button class="tab-btn" data-page="p3">3 · Escolas e Turmas</button>
+  <button class="tab-btn" data-page="p5">4 · Impacto Social</button>
+  <button class="tab-btn" data-page="p4">· Avançado</button>
+</nav>
+
+<main>
+
+<section class="page active" id="p1">
+  <div class="kpis">
+    <div class="kpi b1"><div class="label">INSCRITOS</div><div class="value">1.096</div></div>
+    <div class="kpi b2"><div class="label">ATIVAÇÃO</div><div class="value">46,0%</div></div>
+    <div class="kpi b3"><div class="label">CONCLUSÃO</div><div class="value">15,3%</div></div>
+    <div class="kpi b4"><div class="label">RETENÇÃO</div><div class="value">33,3%</div></div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>1 · Volume de alunos por etapa</h3>
+      <p class="sub">Inscritos, engajados e concluintes — Semestre Atual</p>
+      <div class="chart-wrap" style="height:260px;">
+        <canvas id="c1" role="img" aria-label="Colunas mostrando 1096 inscritos, 504 engajados e 168 concluintes">Inscritos: 1096 . Engajados: 504. Concluintes: 168.</canvas>
+      </div>
+      <button class="dl-btn" onclick="baixar('c1','volume_por_etapa')">Baixar imagem (.png)</button>
+    </div>
+
+    <div class="card">
+      <h3>2 · Estrutura institucional</h3>
+      <p class="sub">Escolas participantes x turmas participantes</p>
+      <div class="chart-wrap" style="height:260px;">
+        <canvas id="c2" role="img" aria-label="Colunas mostrando 8 escolas e 33 turmas">Escolas: 8. Turmas: 33.</canvas>
+      </div>
+      <button class="dl-btn" onclick="baixar('c2','estrutura_institucional')">Baixar imagem (.png)</button>
+    </div>
+  </div>
+
+  <div class="grid wide">
+    <div class="card">
+      <h3>3 · Meta de inscritos x realizado</h3>
+      <p class="sub">Meta: 1.500 inscritos · Realizado: 1.096 (73,1%)</p>
+      <div class="chart-wrap" style="height:140px;">
+        <canvas id="c3" role="img" aria-label="Barra de progresso horizontal mostrando 1096 realizados de uma meta de 1500, ou 73 por cento">Realizado: 1096 de 1500 (73%). Restante: 405.</canvas>
+      </div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--navy);"></span>Realizado</span>
+        <span><span class="dot" style="background:#D8DEEA;"></span>Restante para a meta</span>
+      </div>
+      <button class="dl-btn" onclick="baixar('c3','meta_vs_realizado')">Baixar imagem (.png)</button>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="p2">
+  <div class="grid">
+    <div class="card">
+      <h3>4 · Painel de taxas-chave</h3>
+      <p class="sub">Ativação, conclusão e retenção — Semestre Atual</p>
+      <div class="chart-wrap" style="height:260px;">
+        <canvas id="c4" role="img" aria-label="Colunas mostrando taxa de ativação 46 por cento, conclusão 15,3 por cento, retenção 33,3 por cento">Ativação: 46,0%. Conclusão: 15,3%. Retenção: 33,3%.</canvas>
+      </div>
+      <div class="note">Taxa de Abandono (>30 dias) não incluída — indicador com divergência não resolvida entre duas fontes (3,92% x 43%).</div>
+      <button class="dl-btn" onclick="baixar('c4','taxas_chave')">Baixar imagem (.png)</button>
+    </div>
+
+    <div class="card">
+      <h3>5 · Duas visões de conclusão</h3>
+      <p class="sub">Conclusão geral (sobre inscritos) x retenção (sobre engajados)</p>
+      <div class="chart-wrap" style="height:260px;">
+        <canvas id="c5" role="img" aria-label="Colunas comparando taxa de conclusão geral de 15,3 por cento com taxa de retenção de 33,3 por cento">Conclusão geral: 15,3%. Retenção: 33,3%.</canvas>
+      </div>
+      <button class="dl-btn" onclick="baixar('c5','duas_visoes_conclusao')">Baixar imagem (.png)</button>
+    </div>
+
+    <div class="card">
+      <h3>6 · Comparativo Piloto x Semestre Atual</h3>
+      <p class="sub">As três taxas-chave, lado a lado entre os dois ciclos</p>
+      <div class="chart-wrap" style="height:280px;">
+        <canvas id="c6" role="img" aria-label="Colunas agrupadas comparando Piloto e Semestre Atual nas taxas de ativação, conclusão e retenção">Ativação: 26,4% Piloto vs 46,0% Atual. Conclusão: 8,7% vs 15,3%. Retenção: 32,9% vs 33,3%.</canvas>
+      </div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--navy);"></span>Piloto</span>
+        <span><span class="dot" style="background:var(--orange);"></span>Semestre Atual</span>
+      </div>
+      <button class="dl-btn" onclick="baixar('c6','piloto_x_atual')">Baixar imagem (.png)</button>
+    </div>
+
+    <div class="card">
+      <h3>11 · Engajamento entre semestres</h3>
+      <p class="sub">Número de alunos engajados — Piloto x Semestre Atual</p>
+      <div class="chart-wrap" style="height:280px;">
+        <canvas id="c11" role="img" aria-label="Colunas mostrando 88 alunos engajados no Piloto e 504 no Semestre Atual">Piloto: 88 engajados. Semestre Atual: 504 engajados.</canvas>
+      </div>
+      <button class="dl-btn" onclick="baixar('c11','engajamento_semestres')">Baixar imagem (.png)</button>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="p3">
+  <div class="grid">
+    <div class="card">
+      <h3>8 · Ranking das escolas por ativação</h3>
+      <p class="sub">Percentual de alunos que iniciaram a trilha, por escola</p>
+      <div class="chart-wrap" style="height:320px;">
+        <canvas id="c8" role="img" aria-label="Barras horizontais em ranking das 8 escolas por taxa de ativação, da maior para a menor">CED 104 Recanto das Emas 88,9%. CEMI Taguatinga 70,6%. CED 01 ITAPOÃ 64,4%. CED Jardins Mangueiral 49,1%. CED Incra 08 35,5%. CED Pompílio Marques de Souza 6,2%. Cemab 2,1%. CEM 03 Ceilândia 0%.</canvas>
+      </div>
+      <button class="dl-btn" onclick="baixar('c8','ranking_escolas_ativacao')">Baixar imagem (.png)</button>
+    </div>
+
+    <div class="card">
+      <h3>9 · Perfil das escolas (inscritos)</h3>
+      <p class="sub">Volume de alunos inscritos por escola</p>
+      <div class="chart-wrap" style="height:320px;">
+        <canvas id="c9" role="img" aria-label="Barras horizontais mostrando número de alunos inscritos por escola">CED 01 ITAPOÃ 270. CED 104 Recanto das Emas 189. CEM 03 Ceilândia 151. Cemab 143. CED Jardins Mangueiral 116. CEMI Taguatinga 102. CED Incra 08 76. CED Pompílio Marques de Souza 48.</canvas>
+      </div>
+      <button class="dl-btn" onclick="baixar('c9','perfil_escolas_inscritos')">Baixar imagem (.png)</button>
+    </div>
+  </div>
+
+  <div class="grid wide">
+    <div class="card">
+      <h3>10 · Engajamento por turma</h3>
+      <p class="sub">Taxa de ativação nas 33 turmas do Semestre Atual, da maior para a menor</p>
+      <div class="chart-wrap" style="height:900px;">
+        <canvas id="c10" role="img" aria-label="Barras horizontais mostrando a taxa de ativação em cada uma das 33 turmas, ordenadas da maior para a menor">Turmas variam de 96,9% de ativação até 0% de ativação, evidenciando forte disparidade entre turmas.</canvas>
+      </div>
+      <button class="dl-btn" onclick="baixar('c10','engajamento_por_turma')">Baixar imagem (.png)</button>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="p5">
+  <div class="kpis">
+    <div class="kpi b1"><div class="label">ALUNOS INSCRITOS</div><div class="value">1.096</div></div>
+    <div class="kpi b2"><div class="label">TAXA DE ATIVAÇÃO</div><div class="value">45,99%</div></div>
+    <div class="kpi b3"><div class="label">ITF GERAL (T0 → T1)</div><div class="value">3,71 → 4,10</div></div>
+    <div class="kpi b4"><div class="label">PASSARAM A PLANEJAR GASTOS</div><div class="value">94,1%</div></div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Funil de engajamento</h3>
+      <p class="sub">Inscritos → iniciaram a trilha → concluintes (Semestre Atual)</p>
+      <div class="chart-wrap" style="height:260px;">
+        <canvas id="cFunil" role="img" aria-label="Colunas mostrando 1096 inscritos, 504 iniciaram e 168 concluintes">Inscritos: 1096. Iniciaram: 504. Concluintes: 168.</canvas>
+      </div>
+      <button class="dl-btn" onclick="baixar('cFunil','funil_engajamento')">Baixar imagem (.png)</button>
+    </div>
+
+    <div class="card">
+      <h3>ITF por dimensão — T0 x T1</h3>
+      <p class="sub">Conhecimento, comportamento e planejamento (escala 1–5, grupo n=142/17)</p>
+      <div class="chart-wrap" style="height:260px;">
+        <canvas id="cRadar" role="img" aria-label="Gráfico radar comparando conhecimento, comportamento e planejamento financeiro antes e depois do programa">Conhecimento: 3,88 para 4,29. Comportamento: 3,67 para 3,97. Planejamento: 3,57 para 4,03.</canvas>
+      </div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--navy);"></span>T0</span>
+        <span><span class="dot" style="background:var(--orange);"></span>T1</span>
+      </div>
+      <button class="dl-btn" onclick="baixar('cRadar','itf_radar_t0_t1')">Baixar imagem (.png)</button>
+    </div>
+  </div>
+
+  <div class="grid wide">
+    <div class="card">
+      <h3>ITF por dimensão — versão em barras (leitura exata)</h3>
+      <p class="sub">Mesmo dado do radar acima, em formato mais preciso pra leitura de valor</p>
+      <div class="chart-wrap" style="height:240px;">
+        <canvas id="cRadarBar" role="img" aria-label="Barras agrupadas comparando conhecimento, comportamento e planejamento financeiro entre T0 e T1">Conhecimento: 3,88 para 4,29. Comportamento: 3,67 para 3,97. Planejamento: 3,57 para 4,03.</canvas>
+      </div>
+      <button class="dl-btn" onclick="baixar('cRadarBar','itf_barras_t0_t1')">Baixar imagem (.png)</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Mudança de comportamento (concluintes, T1)</h3>
+      <p class="sub">% que passou a adotar cada hábito após o programa (n=17)</p>
+      <div class="chart-wrap" style="height:280px;">
+        <canvas id="cComport" role="img" aria-label="Barras horizontais mostrando percentuais de mudança comportamental">Registrar gastos: 100%. Reduzir compras por impulso: 100%. Planejar gastos: 94,1%. Compartilhar conhecimento: 70,6%. Poupar dinheiro: 64,7%. Discutir com a família: 58,8%.</canvas>
+      </div>
+      <button class="dl-btn" onclick="baixar('cComport','mudanca_comportamento')">Baixar imagem (.png)</button>
+    </div>
+
+    <div class="card">
+      <h3>Intenção de uso do Pé-de-Meia</h3>
+      <p class="sub">Entre quem conhece o programa (n=128)</p>
+      <div class="chart-wrap" style="height:280px;">
+        <canvas id="cPeDeMeia" role="img" aria-label="Barras horizontais mostrando a intenção de uso do benefício Pé-de-Meia">Guardar o dinheiro: 39,1%. Ainda não sei: 30,5%. Gastar no dia a dia: 12,5%. Ajudar a família: 9,4%. Investir em estudos: 8,6%.</canvas>
+      </div>
+      <div class="note">Barra em vez de rosca: com 5 categorias, fica mais fácil comparar 39,1% x 30,5% do que julgar fatias de tamanho parecido.</div>
+      <button class="dl-btn" onclick="baixar('cPeDeMeia','pe_de_meia_intencao')">Baixar imagem (.png)</button>
+    </div>
+  </div>
+
+  <div class="grid wide">
+    <div class="card">
+      <span class="badge">Cruzamento sugerido</span>
+      <h3>Intenção do Pé-de-Meia × Taxa de conclusão da trilha</h3>
+      <p class="sub">O achado mais forte da base: querer guardar o benefício não prediz engajamento com o curso — é o oposto</p>
+      <div class="chart-wrap" style="height:260px;">
+        <canvas id="cCruzamento" role="img" aria-label="Barras mostrando taxa de conclusão da trilha por grupo de intenção de uso do Pé-de-Meia">Guardar o dinheiro: 2,0% concluem a trilha. Ainda não sei: 15,4%. Investir em estudos: 18,2%.</canvas>
+      </div>
+      <div class="note">Subgrupos pequenos (1–2 concluintes cada) — tratar como hipótese a testar, não conclusão fechada, conforme já sinalizado na sua planilha de origem.</div>
+      <button class="dl-btn" onclick="baixar('cCruzamento','cruzamento_pe_de_meia_conclusao')">Baixar imagem (.png)</button>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="p4">
+  <div class="grid wide">
+    <div class="card">
+      <h3>7 · Volume x taxa de conversão (eixo duplo) — opcional</h3>
+      <p class="sub">Nº de alunos (eixo esquerdo) e % do total de inscritos (eixo direito), por etapa</p>
+      <div class="chart-wrap" style="height:320px;">
+        <canvas id="c7" role="img" aria-label="Gráfico de barras com eixo duplo comparando número de alunos e percentual do total, por etapa do funil">Inscritos: 1096 alunos (100%). Engajados: 504 alunos (46%). Concluintes: 168 alunos (15,3%).</canvas>
+      </div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--navy);"></span>Nº de alunos (eixo esquerdo)</span>
+        <span><span class="dot" style="background:var(--orange);"></span>% do total (eixo direito)</span>
+      </div>
+      <button class="dl-btn" onclick="baixar('c7','volume_x_taxa_conversao')">Baixar imagem (.png)</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  Programa Saldo+ · Dados do Semestre Atual, validados contra a base bruta (Ludos Pro), o Resumo Executivo e o Formulário T0/T1 (Jovem Saldo, Google Forms).
+  Piloto (Planaltina/DF) vem de relatório externo não auditável. Pequena diferença entre "Inscritos" nas páginas 1–3 (1.095, auditado a partir do roster bruto)
+  e na página 4 (1.096, valor oficialmente reportado) já é conhecida — não é erro novo, é a mesma divergência de 1 unidade sinalizada durante a auditoria.
+</footer>
+
+<script>
+Chart.defaults.font.family = "'Poppins', sans-serif";
+Chart.defaults.color = '#6B7280';
+
+const NAVY = '#1B1C46', CYAN = '#17A398', ORANGE = '#F7941D', MAGENTA = '#E5177D', GRAY = '#D8DEEA';
+
+function baseBarOpts(extra){
+  return Object.assign({
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},
+      y:{grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}},beginAtZero:true}
+    }
+  }, extra||{});
+}
+
+new Chart(document.getElementById('c1'), {
+  type:'bar',
+  data:{labels:['Inscritos','Engajados','Concluintes'],
+    datasets:[{data:[1096,504,168],backgroundColor:[NAVY,CYAN,ORANGE],borderRadius:4}]},
+  options: baseBarOpts()
+});
+
+new Chart(document.getElementById('c2'), {
+  type:'bar',
+  data:{labels:['Escolas','Turmas'],
+    datasets:[{data:[8,33],backgroundColor:[NAVY,CYAN],borderRadius:4}]},
+  options: baseBarOpts()
+});
+
+new Chart(document.getElementById('c3'), {
+  type:'bar',
+  data:{labels:['Inscritos - Semestre Atual'],
+    datasets:[
+      {label:'Realizado',data:[1096],backgroundColor:NAVY},
+      {label:'Restante para a meta',data:[405],backgroundColor:GRAY}
+    ]},
+  options:{
+    indexAxis:'y',
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{stacked:true,min:0,max:1500,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}},
+      y:{stacked:true,grid:{display:false},ticks:{color:NAVY,font:{size:11}}}
+    }
+  }
+});
+
+new Chart(document.getElementById('c4'), {
+  type:'bar',
+  data:{labels:['Ativação','Conclusão','Retenção'],
+    datasets:[{data:[46.03,15.34,33.33],backgroundColor:[NAVY,ORANGE,MAGENTA],borderRadius:4}]},
+  options: baseBarOpts({scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{min:0,max:60,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}}}})
+});
+
+new Chart(document.getElementById('c5'), {
+  type:'bar',
+  data:{labels:['Conclusão geral','Retenção'],
+    datasets:[{data:[15.34,33.33],backgroundColor:[ORANGE,MAGENTA],borderRadius:4}]},
+  options: baseBarOpts({scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{min:0,max:40,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}}}})
+});
+
+new Chart(document.getElementById('c6'), {
+  type:'bar',
+  data:{labels:['Ativação','Conclusão','Retenção'],
+    datasets:[
+      {label:'Piloto',data:[26.43,8.71,32.95],backgroundColor:NAVY,borderRadius:4},
+      {label:'Semestre Atual',data:[46.03,15.34,33.33],backgroundColor:ORANGE,borderRadius:4}
+    ]},
+  options: baseBarOpts({scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{min:0,max:55,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}}}})
+});
+
+new Chart(document.getElementById('c11'), {
+  type:'bar',
+  data:{labels:['Piloto','Semestre Atual'],
+    datasets:[{data:[88,504],backgroundColor:[NAVY,ORANGE],borderRadius:4}]},
+  options: baseBarOpts()
+});
+
+const escolasAtiv = ['CED 104 Recanto das Emas','CEMI Taguatinga','CED 01 ITAPOÃ','CED Jardins Mangueiral','CED Incra 08','CED Pompílio Marques de Souza','Cemab','CEM 03 Ceilândia'];
+const taxasAtiv = [88.9,70.6,64.4,49.1,35.5,6.2,2.1,0.0];
+new Chart(document.getElementById('c8'), {
+  type:'bar',
+  data:{labels:escolasAtiv, datasets:[{data:taxasAtiv,backgroundColor:CYAN,borderRadius:4}]},
+  options:{
+    indexAxis:'y',
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{min:0,max:100,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}},
+      y:{grid:{display:false},ticks:{color:NAVY,font:{size:10}}}
+    }
+  }
+});
+
+const escolasInsc = ['CED 01 ITAPOÃ','CED 104 Recanto das Emas','CEM 03 Ceilândia','Cemab','CED Jardins Mangueiral','CEMI Taguatinga','CED Incra 08','CED Pompílio Marques de Souza'];
+const inscPorEscola = [270,189,151,143,116,102,76,48];
+new Chart(document.getElementById('c9'), {
+  type:'bar',
+  data:{labels:escolasInsc, datasets:[{data:inscPorEscola,backgroundColor:NAVY,borderRadius:4}]},
+  options:{
+    indexAxis:'y',
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}},
+      y:{grid:{display:false},ticks:{color:NAVY,font:{size:10}}}
+    }
+  }
+});
+
+const turmaLabels = ['CED 104 Recanto - C','CED 104 Recanto - B','CED 104 Recanto - A','CED 104 Recanto - H','CED 104 Recanto - G','ITAPOÃ - C','ITAPOÃ - D','Incra 08 - A','ITAPOÃ - E','CEMI Tag. - A','ITAPOÃ - A','CED 104 Recanto - I','ITAPOÃ - B','CEMI Tag. - C','CEMI Tag. - E','ITAPOÃ - G','Jardins Mang. - D','ITAPOÃ - F','Jardins Mang. - C','Jardins Mang. - B','Pompílio M.S. - A','Cemab - B','Pompílio M.S. - C','Incra 08 - B','Cemab - A','Incra 08 - Av','ITAPOÃ - K','CEM 03 Ceil. - C','CEM 03 Ceil. - D','CEM 03 Ceil. - E','CEM 03 Ceil. - F','Cemab - H','Cemab - I'];
+const turmaTaxas = [96.9,93.9,90.3,90.3,87.5,79.5,79.4,78.8,78.1,77.8,75.0,73.3,71.1,66.7,66.7,66.7,64.9,54.5,50.0,32.4,8.0,5.6,4.3,3.8,2.9,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0];
+new Chart(document.getElementById('c10'), {
+  type:'bar',
+  data:{labels:turmaLabels, datasets:[{data:turmaTaxas,backgroundColor:CYAN,borderRadius:3}]},
+  options:{
+    indexAxis:'y',
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{min:0,max:100,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}},
+      y:{grid:{display:false},ticks:{color:NAVY,font:{size:9}}}
+    }
+  }
+});
+
+new Chart(document.getElementById('c7'), {
+  type:'bar',
+  data:{labels:['Inscritos','Engajados','Concluintes'],
+    datasets:[
+      {label:'Nº de alunos',data:[1096,504,168],backgroundColor:NAVY,yAxisID:'yVol',borderRadius:4},
+      {label:'% do total',data:[100,46.03,15.34],backgroundColor:ORANGE,yAxisID:'yPct',borderRadius:4}
+    ]},
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},
+      yVol:{position:'left',min:0,max:1200,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}},
+      yPct:{position:'right',min:0,max:110,grid:{display:false},ticks:{color:'#6B7280',font:{size:10}}}
+    }
+  }
+});
+
+new Chart(document.getElementById('cFunil'), {
+  type:'bar',
+  data:{labels:['Inscritos','Iniciaram','Concluintes'],
+    datasets:[{data:[1096,504,168],backgroundColor:[NAVY,CYAN,ORANGE],borderRadius:4}]},
+  options: baseBarOpts()
+});
+
+new Chart(document.getElementById('cRadar'), {
+  type:'radar',
+  data:{labels:['Conhecimento','Comportamento','Planejamento'],
+    datasets:[
+      {label:'T0',data:[3.88,3.67,3.57],borderColor:NAVY,backgroundColor:'rgba(22,41,74,0.15)',pointBackgroundColor:NAVY},
+      {label:'T1',data:[4.29,3.97,4.03],borderColor:ORANGE,backgroundColor:'rgba(242,153,74,0.15)',pointBackgroundColor:ORANGE}
+    ]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{r:{min:0,max:5,ticks:{color:'#6B7280',font:{size:9}},grid:{color:'#E5E7EB'},pointLabels:{color:NAVY,font:{size:11}}}}}
+});
+
+new Chart(document.getElementById('cRadarBar'), {
+  type:'bar',
+  data:{labels:['Conhecimento','Comportamento','Planejamento'],
+    datasets:[
+      {label:'T0',data:[3.88,3.67,3.57],backgroundColor:NAVY,borderRadius:4},
+      {label:'T1',data:[4.29,3.97,4.03],backgroundColor:ORANGE,borderRadius:4}
+    ]},
+  options: baseBarOpts({scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{min:0,max:5,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}}}})
+});
+
+const comportLabels = ['Registrar gastos','Reduzir compras por impulso','Planejar gastos','Compartilhar conhecimento','Poupar dinheiro','Discutir com a família'];
+const comportValores = [100,100,94.1,70.6,64.7,58.8];
+new Chart(document.getElementById('cComport'), {
+  type:'bar',
+  data:{labels:comportLabels, datasets:[{data:comportValores,backgroundColor:CYAN,borderRadius:4}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{min:0,max:100,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}},y:{grid:{display:false},ticks:{color:NAVY,font:{size:10}}}}}
+});
+
+const peDeMeiaLabels = ['Guardar o dinheiro','Ainda não sei','Gastar no dia a dia','Ajudar a família','Investir em estudos'];
+const peDeMeiaValores = [39.1,30.5,12.5,9.4,8.6];
+new Chart(document.getElementById('cPeDeMeia'), {
+  type:'bar',
+  data:{labels:peDeMeiaLabels, datasets:[{data:peDeMeiaValores,backgroundColor:MAGENTA,borderRadius:4}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{min:0,max:45,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}},y:{grid:{display:false},ticks:{color:NAVY,font:{size:10}}}}}
+});
+
+new Chart(document.getElementById('cCruzamento'), {
+  type:'bar',
+  data:{labels:['Guardar o dinheiro','Ainda não sei','Investir em estudos'],
+    datasets:[{data:[2.0,15.4,18.2],backgroundColor:[MAGENTA,ORANGE,CYAN],borderRadius:4}]},
+  options: baseBarOpts({scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{min:0,max:22,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}}}})
+});
+
+function baixar(canvasId, nome){
+  const canvas = document.getElementById(canvasId);
+  const link = document.createElement('a');
+  link.download = nome + '.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.page).classList.add('active');
+  });
+});
+</script>
+
+</body>
+</html>
