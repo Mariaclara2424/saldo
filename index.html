@@ -92,11 +92,21 @@
 
     <div class="card">
       <h3>2 · Estrutura institucional</h3>
-      <p class="sub">Escolas participantes x turmas participantes</p>
-      <div class="chart-wrap" style="height:260px;">
-        <canvas id="c2" role="img" aria-label="Colunas mostrando 8 escolas e 33 turmas">Escolas: 8. Turmas: 33.</canvas>
+      <p class="sub">Regionais de ensino, escolas e turmas participantes</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div style="background:#F7F8FC;border-radius:8px;padding:18px 12px;text-align:center;">
+          <div style="font-size:34px;font-weight:600;color:var(--navy);line-height:1.1;">7</div>
+          <div style="font-size:12px;color:var(--text-muted);font-weight:500;letter-spacing:.03em;margin-top:4px;">REGIONAIS DE ENSINO</div>
+        </div>
+        <div style="background:#F7F8FC;border-radius:8px;padding:18px 12px;text-align:center;">
+          <div style="font-size:34px;font-weight:600;color:var(--cyan);line-height:1.1;">8</div>
+          <div style="font-size:12px;color:var(--text-muted);font-weight:500;letter-spacing:.03em;margin-top:4px;">ESCOLAS</div>
+        </div>
+        <div style="background:#F7F8FC;border-radius:8px;padding:18px 12px;text-align:center;">
+          <div style="font-size:34px;font-weight:600;color:var(--orange);line-height:1.1;">33</div>
+          <div style="font-size:12px;color:var(--text-muted);font-weight:500;letter-spacing:.03em;margin-top:4px;">TURMAS</div>
+        </div>
       </div>
-      <button class="dl-btn" onclick="baixar('c2','estrutura_institucional')">Baixar imagem (.png)</button>
     </div>
   </div>
 
@@ -315,15 +325,6 @@ new Chart(document.getElementById('c1'), {
   type:'bar',
   data:{labels:['Inscritos','Engajados','Concluintes'],
     datasets:[{data:[1096,504,168],backgroundColor:[NAVY,CYAN,ORANGE],borderRadius:4}]},
-  options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:NAVY,font:{size:11,weight:600},formatter:fmtInt}},
-    scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}},beginAtZero:true}}}
-});
-
-new Chart(document.getElementById('c2'), {
-  type:'bar',
-  data:{labels:['Escolas','Turmas'],
-    datasets:[{data:[8,33],backgroundColor:[NAVY,CYAN],borderRadius:4}]},
   options:{responsive:true,maintainAspectRatio:false,
     plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:NAVY,font:{size:11,weight:600},formatter:fmtInt}},
     scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}},beginAtZero:true}}}
