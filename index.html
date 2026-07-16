@@ -6,6 +6,7 @@
 <title>Programa Saldo+ — Dashboard Completo</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
 <style>
   :root{
     --navy:#1B1C46; --navy-light:#8B8CB8; --cyan:#17A398;
@@ -58,7 +59,7 @@
 
 <header class="top">
   <h1>Programa Saldo+</h1>
-  <p>Dashboard  versão 1.0 · Semestre 2026 </p>
+  <p>Dashboard versão 1.0 · Semestre 2026</p>
 </header>
 
 <nav class="tabs">
@@ -84,7 +85,7 @@
       <h3>1 · Volume de alunos por etapa</h3>
       <p class="sub">Inscritos, engajados e concluintes — Semestre Atual</p>
       <div class="chart-wrap" style="height:260px;">
-        <canvas id="c1" role="img" aria-label="Colunas mostrando 1096 inscritos, 504 engajados e 168 concluintes">Inscritos: 1096 . Engajados: 504. Concluintes: 168.</canvas>
+        <canvas id="c1" role="img" aria-label="Colunas mostrando 1096 inscritos, 504 engajados e 168 concluintes">Inscritos: 1096. Engajados: 504. Concluintes: 168.</canvas>
       </div>
       <button class="dl-btn" onclick="baixar('c1','volume_por_etapa')">Baixar imagem (.png)</button>
     </div>
@@ -104,7 +105,7 @@
       <h3>3 · Meta de inscritos x realizado</h3>
       <p class="sub">Meta: 1.500 inscritos · Realizado: 1.096 (73,1%)</p>
       <div class="chart-wrap" style="height:140px;">
-        <canvas id="c3" role="img" aria-label="Barra de progresso horizontal mostrando 1096 realizados de uma meta de 1500, ou 73 por cento">Realizado: 1096 de 1500 (73%). Restante: 405.</canvas>
+        <canvas id="c3" role="img" aria-label="Barra de progresso horizontal mostrando 1096 realizados de uma meta de 1500, ou 73 por cento">Realizado: 1096 de 1500 (73,1%). Restante: 404.</canvas>
       </div>
       <div class="legend">
         <span><span class="dot" style="background:var(--navy);"></span>Realizado</span>
@@ -232,6 +233,10 @@
       <div class="chart-wrap" style="height:240px;">
         <canvas id="cRadarBar" role="img" aria-label="Barras agrupadas comparando conhecimento, comportamento e planejamento financeiro entre T0 e T1">Conhecimento: 3,88 para 4,29. Comportamento: 3,67 para 3,97. Planejamento: 3,57 para 4,03.</canvas>
       </div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--navy);"></span>T0</span>
+        <span><span class="dot" style="background:var(--orange);"></span>T1</span>
+      </div>
       <button class="dl-btn" onclick="baixar('cRadarBar','itf_barras_t0_t1')">Baixar imagem (.png)</button>
     </div>
   </div>
@@ -291,53 +296,51 @@
 </main>
 
 <footer class="foot">
-
+  Programa Saldo+ · Dashboard versão 1.0 · Semestre 2026.
 </footer>
 
 <script>
+Chart.register(ChartDataLabels);
 Chart.defaults.font.family = "'Poppins', sans-serif";
 Chart.defaults.color = '#6B7280';
+Chart.defaults.set('plugins.datalabels', { display: false });
 
 const NAVY = '#1B1C46', CYAN = '#17A398', ORANGE = '#F7941D', MAGENTA = '#E5177D', GRAY = '#D8DEEA';
 
-function baseBarOpts(extra){
-  return Object.assign({
-    responsive:true,
-    maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
-    scales:{
-      x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},
-      y:{grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}},beginAtZero:true}
-    }
-  }, extra||{});
-}
+const fmtPct1 = v => v.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}) + '%';
+const fmtInt = v => v.toLocaleString('pt-BR');
+const fmtDec2 = v => v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 
 new Chart(document.getElementById('c1'), {
   type:'bar',
   data:{labels:['Inscritos','Engajados','Concluintes'],
     datasets:[{data:[1096,504,168],backgroundColor:[NAVY,CYAN,ORANGE],borderRadius:4}]},
-  options: baseBarOpts()
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:NAVY,font:{size:11,weight:600},formatter:fmtInt}},
+    scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}},beginAtZero:true}}}
 });
 
 new Chart(document.getElementById('c2'), {
   type:'bar',
   data:{labels:['Escolas','Turmas'],
     datasets:[{data:[8,33],backgroundColor:[NAVY,CYAN],borderRadius:4}]},
-  options: baseBarOpts()
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:NAVY,font:{size:11,weight:600},formatter:fmtInt}},
+    scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}},beginAtZero:true}}}
 });
 
 new Chart(document.getElementById('c3'), {
   type:'bar',
   data:{labels:['Inscritos - Semestre Atual'],
     datasets:[
-      {label:'Realizado',data:[1096],backgroundColor:NAVY},
-      {label:'Restante para a meta',data:[405],backgroundColor:GRAY}
+      {label:'Realizado',data:[1096],backgroundColor:NAVY,
+        datalabels:{color:'#fff',anchor:'center',align:'center',font:{size:11,weight:600},formatter:v=>fmtInt(v)+' (73,1%)'}},
+      {label:'Restante para a meta',data:[404],backgroundColor:GRAY,
+        datalabels:{color:NAVY,anchor:'center',align:'center',font:{size:11,weight:600},formatter:v=>fmtInt(v)}}
     ]},
   options:{
-    indexAxis:'y',
-    responsive:true,
-    maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},datalabels:{display:true}},
     scales:{
       x:{stacked:true,min:0,max:1500,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}},
       y:{stacked:true,grid:{display:false},ticks:{color:NAVY,font:{size:11}}}
@@ -349,14 +352,18 @@ new Chart(document.getElementById('c4'), {
   type:'bar',
   data:{labels:['Ativação','Conclusão','Retenção'],
     datasets:[{data:[46.03,15.34,33.33],backgroundColor:[NAVY,ORANGE,MAGENTA],borderRadius:4}]},
-  options: baseBarOpts({scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{min:0,max:60,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}}}})
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:NAVY,font:{size:11,weight:600},formatter:fmtPct1}},
+    scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{min:0,max:60,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}}}}
 });
 
 new Chart(document.getElementById('c5'), {
   type:'bar',
   data:{labels:['Conclusão geral','Retenção'],
     datasets:[{data:[15.34,33.33],backgroundColor:[ORANGE,MAGENTA],borderRadius:4}]},
-  options: baseBarOpts({scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{min:0,max:40,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}}}})
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:NAVY,font:{size:11,weight:600},formatter:fmtPct1}},
+    scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{min:0,max:40,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}}}}
 });
 
 new Chart(document.getElementById('c6'), {
@@ -366,14 +373,18 @@ new Chart(document.getElementById('c6'), {
       {label:'Piloto',data:[26.43,8.71,32.95],backgroundColor:NAVY,borderRadius:4},
       {label:'Semestre Atual',data:[46.03,15.34,33.33],backgroundColor:ORANGE,borderRadius:4}
     ]},
-  options: baseBarOpts({scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{min:0,max:55,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}}}})
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:NAVY,font:{size:10,weight:600},formatter:fmtPct1}},
+    scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{min:0,max:55,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}}}}
 });
 
 new Chart(document.getElementById('c11'), {
   type:'bar',
   data:{labels:['Piloto','Semestre Atual'],
     datasets:[{data:[88,504],backgroundColor:[NAVY,ORANGE],borderRadius:4}]},
-  options: baseBarOpts()
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:NAVY,font:{size:11,weight:600},formatter:fmtInt}},
+    scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}},beginAtZero:true}}}
 });
 
 const escolasAtiv = ['CED 104 Recanto das Emas','CEMI Taguatinga','CED 01 ITAPOÃ','CED Jardins Mangueiral','CED Incra 08','CED Pompílio Marques de Souza','Cemab','CEM 03 Ceilândia'];
@@ -382,10 +393,8 @@ new Chart(document.getElementById('c8'), {
   type:'bar',
   data:{labels:escolasAtiv, datasets:[{data:taxasAtiv,backgroundColor:CYAN,borderRadius:4}]},
   options:{
-    indexAxis:'y',
-    responsive:true,
-    maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:NAVY,font:{size:10,weight:600},formatter:fmtPct1}},
     scales:{
       x:{min:0,max:100,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}},
       y:{grid:{display:false},ticks:{color:NAVY,font:{size:10}}}
@@ -399,10 +408,8 @@ new Chart(document.getElementById('c9'), {
   type:'bar',
   data:{labels:escolasInsc, datasets:[{data:inscPorEscola,backgroundColor:NAVY,borderRadius:4}]},
   options:{
-    indexAxis:'y',
-    responsive:true,
-    maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:NAVY,font:{size:10,weight:600},formatter:fmtInt}},
     scales:{
       x:{grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}},
       y:{grid:{display:false},ticks:{color:NAVY,font:{size:10}}}
@@ -416,10 +423,8 @@ new Chart(document.getElementById('c10'), {
   type:'bar',
   data:{labels:turmaLabels, datasets:[{data:turmaTaxas,backgroundColor:CYAN,borderRadius:3}]},
   options:{
-    indexAxis:'y',
-    responsive:true,
-    maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:NAVY,font:{size:9,weight:600},formatter:fmtPct1}},
     scales:{
       x:{min:0,max:100,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}},
       y:{grid:{display:false},ticks:{color:NAVY,font:{size:9}}}
@@ -431,13 +436,14 @@ new Chart(document.getElementById('c7'), {
   type:'bar',
   data:{labels:['Inscritos','Engajados','Concluintes'],
     datasets:[
-      {label:'Nº de alunos',data:[1096,504,168],backgroundColor:NAVY,yAxisID:'yVol',borderRadius:4},
-      {label:'% do total',data:[100,46.03,15.34],backgroundColor:ORANGE,yAxisID:'yPct',borderRadius:4}
+      {label:'Nº de alunos',data:[1096,504,168],backgroundColor:NAVY,yAxisID:'yVol',
+        datalabels:{color:NAVY,anchor:'end',align:'end',font:{size:10,weight:600},formatter:fmtInt}},
+      {label:'% do total',data:[100,46.03,15.34],backgroundColor:ORANGE,yAxisID:'yPct',
+        datalabels:{color:'#B5650F',anchor:'end',align:'start',font:{size:10,weight:600},formatter:fmtPct1}}
     ]},
   options:{
-    responsive:true,
-    maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},datalabels:{display:true}},
     scales:{
       x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},
       yVol:{position:'left',min:0,max:1200,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}},
@@ -450,17 +456,22 @@ new Chart(document.getElementById('cFunil'), {
   type:'bar',
   data:{labels:['Inscritos','Iniciaram','Concluintes'],
     datasets:[{data:[1096,504,168],backgroundColor:[NAVY,CYAN,ORANGE],borderRadius:4}]},
-  options: baseBarOpts()
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:NAVY,font:{size:11,weight:600},formatter:fmtInt}},
+    scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}},beginAtZero:true}}}
 });
 
 new Chart(document.getElementById('cRadar'), {
   type:'radar',
   data:{labels:['Conhecimento','Comportamento','Planejamento'],
     datasets:[
-      {label:'T0',data:[3.88,3.67,3.57],borderColor:NAVY,backgroundColor:'rgba(22,41,74,0.15)',pointBackgroundColor:NAVY},
-      {label:'T1',data:[4.29,3.97,4.03],borderColor:ORANGE,backgroundColor:'rgba(242,153,74,0.15)',pointBackgroundColor:ORANGE}
+      {label:'T0',data:[3.88,3.67,3.57],borderColor:NAVY,backgroundColor:'rgba(27,28,70,0.15)',pointBackgroundColor:NAVY,
+        datalabels:{color:NAVY,align:'end',font:{size:9,weight:600},formatter:fmtDec2}},
+      {label:'T1',data:[4.29,3.97,4.03],borderColor:ORANGE,backgroundColor:'rgba(247,148,29,0.15)',pointBackgroundColor:ORANGE,
+        datalabels:{color:'#B5650F',align:'start',font:{size:9,weight:600},formatter:fmtDec2}}
     ]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},datalabels:{display:true}},
     scales:{r:{min:0,max:5,ticks:{color:'#6B7280',font:{size:9}},grid:{color:'#E5E7EB'},pointLabels:{color:NAVY,font:{size:11}}}}}
 });
 
@@ -471,7 +482,9 @@ new Chart(document.getElementById('cRadarBar'), {
       {label:'T0',data:[3.88,3.67,3.57],backgroundColor:NAVY,borderRadius:4},
       {label:'T1',data:[4.29,3.97,4.03],backgroundColor:ORANGE,borderRadius:4}
     ]},
-  options: baseBarOpts({scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{min:0,max:5,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}}}})
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:NAVY,font:{size:10,weight:600},formatter:fmtDec2}},
+    scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{min:0,max:5,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}}}}
 });
 
 const comportLabels = ['Registrar gastos','Reduzir compras por impulso','Planejar gastos','Compartilhar conhecimento','Poupar dinheiro','Discutir com a família'];
@@ -479,7 +492,8 @@ const comportValores = [100,100,94.1,70.6,64.7,58.8];
 new Chart(document.getElementById('cComport'), {
   type:'bar',
   data:{labels:comportLabels, datasets:[{data:comportValores,backgroundColor:CYAN,borderRadius:4}]},
-  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:NAVY,font:{size:10,weight:600},formatter:fmtPct1}},
     scales:{x:{min:0,max:100,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}},y:{grid:{display:false},ticks:{color:NAVY,font:{size:10}}}}}
 });
 
@@ -488,7 +502,8 @@ const peDeMeiaValores = [39.1,30.5,12.5,9.4,8.6];
 new Chart(document.getElementById('cPeDeMeia'), {
   type:'bar',
   data:{labels:peDeMeiaLabels, datasets:[{data:peDeMeiaValores,backgroundColor:MAGENTA,borderRadius:4}]},
-  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:NAVY,font:{size:10,weight:600},formatter:fmtPct1}},
     scales:{x:{min:0,max:45,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}},y:{grid:{display:false},ticks:{color:NAVY,font:{size:10}}}}}
 });
 
@@ -496,21 +511,88 @@ new Chart(document.getElementById('cCruzamento'), {
   type:'bar',
   data:{labels:['Guardar o dinheiro','Ainda não sei','Investir em estudos'],
     datasets:[{data:[2.0,15.4,18.2],backgroundColor:[MAGENTA,ORANGE,CYAN],borderRadius:4}]},
-  options: baseBarOpts({scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{min:0,max:22,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}}}})
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:NAVY,font:{size:11,weight:600},formatter:fmtPct1}},
+    scales:{x:{grid:{display:false},ticks:{color:NAVY,font:{size:11}}},y:{min:0,max:22,grid:{color:'#E5E7EB'},ticks:{color:'#6B7280',font:{size:10}}}}}
 });
 
-function baixar(canvasId, nome){
+async function baixar(canvasId, nome){
+  if (document.fonts && document.fonts.ready) { await document.fonts.ready; }
   const canvas = document.getElementById(canvasId);
+  const card = canvas.closest('.card');
+  const titleEl = card ? card.querySelector('h3') : null;
+  const subEl = card ? card.querySelector('.sub') : null;
+  const legendEl = card ? card.querySelector('.legend') : null;
+
+  const title = titleEl ? titleEl.innerText : '';
+  const sub = subEl ? subEl.innerText : '';
+  const legendItems = legendEl ? Array.from(legendEl.querySelectorAll('span')).map(function(s){
+    const dotEl = s.querySelector('.dot');
+    return { color: dotEl ? getComputedStyle(dotEl).backgroundColor : '#999', text: s.textContent.trim() };
+  }) : [];
+
+  const dpr = window.devicePixelRatio || 1;
+  const padX = Math.round(24 * dpr);
+  const titleH = Math.round(30 * dpr);
+  const subH = sub ? Math.round(20 * dpr) : 0;
+  const legendH = legendItems.length ? Math.round(28 * dpr) : 0;
+  const topPad = Math.round(16 * dpr);
+  const bottomPad = Math.round(16 * dpr);
+  const gapAfterText = Math.round(8 * dpr);
+
+  const chartW = canvas.width;
+  const chartH = canvas.height;
+
+  const out = document.createElement('canvas');
+  out.width = chartW + padX * 2;
+  out.height = topPad + titleH + subH + gapAfterText + chartH + legendH + bottomPad;
+  const ctx = out.getContext('2d');
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, out.width, out.height);
+
+  let y = topPad;
+  ctx.textBaseline = 'top';
+  ctx.fillStyle = '#1B1C46';
+  ctx.font = (600) + ' ' + Math.round(16 * dpr) + 'px Poppins, sans-serif';
+  ctx.fillText(title, padX, y);
+  y += titleH;
+
+  if (sub) {
+    ctx.fillStyle = '#6B7280';
+    ctx.font = '400 ' + Math.round(12 * dpr) + 'px Poppins, sans-serif';
+    ctx.fillText(sub, padX, y);
+    y += subH;
+  }
+  y += gapAfterText;
+
+  ctx.drawImage(canvas, padX, y, chartW, chartH);
+  y += chartH + Math.round(10 * dpr);
+
+  if (legendItems.length) {
+    let x = padX;
+    ctx.font = '500 ' + Math.round(11 * dpr) + 'px Poppins, sans-serif';
+    legendItems.forEach(function(item){
+      const boxSize = Math.round(9 * dpr);
+      ctx.fillStyle = item.color;
+      ctx.fillRect(x, y + Math.round(3 * dpr), boxSize, boxSize);
+      ctx.fillStyle = '#6B7280';
+      const textW = ctx.measureText(item.text).width;
+      ctx.fillText(item.text, x + boxSize + Math.round(5 * dpr), y);
+      x += boxSize + Math.round(5 * dpr) + textW + Math.round(16 * dpr);
+    });
+  }
+
   const link = document.createElement('a');
   link.download = nome + '.png';
-  link.href = canvas.toDataURL('image/png');
+  link.href = out.toDataURL('image/png');
   link.click();
 }
 
-document.querySelectorAll('.tab-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
     btn.classList.add('active');
     document.getElementById(btn.dataset.page).classList.add('active');
   });
