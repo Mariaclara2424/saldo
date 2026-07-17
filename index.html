@@ -98,7 +98,7 @@
       <div class="chart-wrap" style="height:260px;">
         <canvas id="c1" role="img" aria-label="Colunas mostrando 1096 inscritos, 504 engajados e 168 concluintes">Inscritos: 1096. Engajados: 504. Concluintes: 168.</canvas>
       </div>
-      <div class="insight">📈 Com 1.096 inscritos, o Semestre Atual já reúne mais de 3x o volume do Piloto (333) — e ainda assim mantém 504 alunos engajados e 168 concluintes, prova de que a estrutura aguenta crescer.</div>
+      <div class="insight">📈 Com 1.096 inscritos, o Semestre Atual já reúne mais de 3x o volume do Piloto (333) — e mantém 504 alunos engajados e 168 concluintes, prova de que a estrutura aguenta crescer.</div>
       <button class="dl-btn" onclick="baixar('c1','volume_por_etapa')">Baixar imagem (.png)</button>
     </div>
 
@@ -131,7 +131,7 @@
           <div style="font-size:11px;color:var(--text-muted);font-weight:500;letter-spacing:.02em;margin-top:4px;">DIAS · TEMPO MÉDIO DE CONCLUSÃO</div>
         </div>
       </div>
-      <div class="insight">📈 Um único semestre já cobre 7 regionais, 8 escolas e 33 turmas — e mesmo com esse salto de escala, a nota média dos concluintes se mantém em 90%, mostrando que crescimento não veio às custas da qualidade.</div>
+      <div class="insight">📈 Um único semestre já cobre 7 regionais, 8 escolas e 33 turmas — uma expansão grande frente ao Piloto (2 escolas). Mesmo com esse salto operacional, a nota média dos concluintes segue alta (90%), sinal de que ampliar o alcance não reduziu a qualidade do aprendizado.</div>
       <button class="dl-btn" onclick="baixarEstrutura()">Baixar imagem (.png)</button>
     </div>
   </div>
@@ -157,7 +157,7 @@
   <div class="grid">
     <div class="card">
       <h3>4 · Painel de taxas-chave</h3>
-      <p class="sub">Ativação, conclusão e retenção — Semestre Atual</p>
+      <p class="sub">Ativação (iniciou a trilha) · Conclusão (terminou, sobre o total de inscritos) · Retenção (terminou, sobre quem iniciou) — Semestre Atual</p>
       <div class="chart-wrap" style="height:260px;">
         <canvas id="c4" role="img" aria-label="Colunas mostrando taxa de ativação 46 por cento, conclusão 15,3 por cento, retenção 33,3 por cento">Ativação: 46,0%. Conclusão: 15,3%. Retenção: 33,3%.</canvas>
       </div>
@@ -167,7 +167,7 @@
 
     <div class="card">
       <h3>5 · Duas visões de conclusão</h3>
-      <p class="sub">Conclusão geral (sobre inscritos) x retenção (sobre engajados)</p>
+      <p class="sub">Conclusão geral = concluintes ÷ total de inscritos · Retenção = concluintes ÷ alunos que chegaram a iniciar a trilha</p>
       <div class="chart-wrap" style="height:260px;">
         <canvas id="c5" role="img" aria-label="Colunas comparando taxa de conclusão geral de 15,3 por cento com taxa de retenção de 33,3 por cento">Conclusão geral: 15,3%. Retenção: 33,3%.</canvas>
       </div>
@@ -177,7 +177,7 @@
 
     <div class="card">
       <h3>6 · Comparativo Piloto x Semestre Atual</h3>
-      <p class="sub">As três taxas-chave, lado a lado entre os dois ciclos</p>
+      <p class="sub">Ativação, conclusão e retenção lado a lado — Piloto x Semestre Atual</p>
       <div class="chart-wrap" style="height:280px;">
         <canvas id="c6" role="img" aria-label="Colunas agrupadas comparando Piloto e Semestre Atual nas taxas de ativação, conclusão e retenção">Ativação: 26,4% Piloto vs 46,0% Atual. Conclusão: 8,7% vs 15,3%. Retenção: 32,9% vs 33,3%.</canvas>
       </div>
@@ -191,7 +191,7 @@
 
     <div class="card">
       <h3>11 · Engajamento entre semestres</h3>
-      <p class="sub">Número de alunos engajados — Piloto x Semestre Atual</p>
+      <p class="sub">Número de alunos que iniciaram a trilha (engajados) — Piloto x Semestre Atual</p>
       <div class="chart-wrap" style="height:280px;">
         <canvas id="c11" role="img" aria-label="Colunas mostrando 88 alunos engajados no Piloto e 504 no Semestre Atual">Piloto: 88 engajados. Semestre Atual: 504 engajados.</canvas>
       </div>
@@ -245,6 +245,8 @@
     <div class="kpi b4"><div class="label">PASSARAM A PLANEJAR GASTOS</div><div class="value">94,1%</div></div>
   </div>
 
+  <div class="note" style="margin-bottom:16px;">Glossário: <strong>ITF</strong> = Índice de Transformação Financeira (média das notas de conhecimento, comportamento e planejamento financeiro, escala de 1 a 5). <strong>T0</strong> = antes do programa · <strong>T1</strong> = depois do programa.</div>
+
   <div class="grid">
     <div class="card">
       <h3>Funil de engajamento</h3>
@@ -252,12 +254,12 @@
       <div class="chart-wrap" style="height:260px;">
         <canvas id="cFunil" role="img" aria-label="Colunas mostrando 1096 inscritos, 504 iniciaram e 168 concluintes">Inscritos: 1096. Iniciaram: 504. Concluintes: 168.</canvas>
       </div>
-      <div class="insight">📈 O funil fecha dentro da faixa saudável de mercado para MOOCs abertos (5%–15% de conclusão) — com 15,3%, o Saldo+ está no topo dessa referência, sustentado por uma entrada forte de 1.096 inscritos.</div>
+      <div class="insight">📈 O funil fecha dentro da faixa saudável de mercado para MOOCs abertos — sigla para cursos on-line abertos e de grande escala (5%–15% de conclusão é o benchmark do setor) — com 15,3%, o Saldo+ está no topo dessa referência, sustentado por uma entrada forte de 1.096 inscritos.</div>
       <button class="dl-btn" onclick="baixar('cFunil','funil_engajamento')">Baixar imagem (.png)</button>
     </div>
 
     <div class="card">
-      <h3>ITF por dimensão — T0 x T1</h3>
+      <h3>ITF (Índice de Transformação Financeira) por dimensão — T0 x T1</h3>
       <p class="sub">Conhecimento, comportamento e planejamento (escala 1–5, grupo n=142/17)</p>
       <div class="chart-wrap" style="height:260px;">
         <canvas id="cRadar" role="img" aria-label="Gráfico radar comparando conhecimento, comportamento e planejamento financeiro antes e depois do programa">Conhecimento: 3,88 para 4,29. Comportamento: 3,67 para 3,97. Planejamento: 3,57 para 4,03.</canvas>
@@ -273,7 +275,7 @@
 
   <div class="grid wide">
     <div class="card">
-      <h3>ITF por dimensão — versão em barras (leitura exata)</h3>
+      <h3>ITF (Índice de Transformação Financeira) por dimensão — versão em barras (leitura exata)</h3>
       <p class="sub">Mesmo dado do radar acima, em formato mais preciso pra leitura de valor</p>
       <div class="chart-wrap" style="height:240px;">
         <canvas id="cRadarBar" role="img" aria-label="Barras agrupadas comparando conhecimento, comportamento e planejamento financeiro entre T0 e T1">Conhecimento: 3,88 para 4,29. Comportamento: 3,67 para 3,97. Planejamento: 3,57 para 4,03.</canvas>
@@ -304,7 +306,6 @@
       <div class="chart-wrap" style="height:280px;">
         <canvas id="cPeDeMeia" role="img" aria-label="Barras horizontais mostrando a intenção de uso do benefício Pé-de-Meia">Guardar o dinheiro: 39,1%. Ainda não sei: 30,5%. Gastar no dia a dia: 12,5%. Ajudar a família: 9,4%. Investir em estudos: 8,6%.</canvas>
       </div>
-      <div class="note">Barra em vez de rosca: com 5 categorias, fica mais fácil comparar 39,1% x 30,5% do que julgar fatias de tamanho parecido.</div>
       <div class="insight">📈 39,1% já pretendem guardar o benefício, e a altíssima penetração espontânea do programa (90,1% já conhecem o Pé-de-Meia) mostra terreno fértil para a trilha reforçar esse hábito de poupança.</div>
       <button class="dl-btn" onclick="baixar('cPeDeMeia','pe_de_meia_intencao')">Baixar imagem (.png)</button>
     </div>
@@ -318,7 +319,7 @@
       <div class="chart-wrap" style="height:260px;">
         <canvas id="cCruzamento" role="img" aria-label="Barras mostrando taxa de conclusão da trilha por grupo de intenção de uso do Pé-de-Meia">Guardar o dinheiro: 2,0% concluem a trilha. Ainda não sei: 15,4%. Investir em estudos: 18,2%.</canvas>
       </div>
-      <div class="note">Subgrupos pequenos (1–2 concluintes cada) — tratar como hipótese a testar, não conclusão fechada, conforme já sinalizado na sua planilha de origem.</div>
+      <div class="note">Atenção: subgrupos pequenos (1–2 concluintes em cada) — ler como indício a explorar, não como conclusão estatística fechada.</div>
       <div class="insight">📈 O achado mais valioso da base: o grupo que mais precisa do curso — quem ainda não guarda dinheiro — é justamente quem mais conclui a trilha (17,6% vs. 8,8% do restante). O programa está alcançando exatamente quem mais se beneficia dele.</div>
       <button class="dl-btn" onclick="baixar('cCruzamento','cruzamento_pe_de_meia_conclusao')">Baixar imagem (.png)</button>
     </div>
